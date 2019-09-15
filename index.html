@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bookstore</title>
+  
+  <link rel="stylesheet" href="css/bulma.min.css">
+
+  <style>
+    .notification {
+      margin: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar is-success" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="#">
+        <p>BookStore</p>
+      </a>
+  </nav>
+
+  <!-- Alert message -->
+  <div class="container">
+    <div id="message">
+
+    </div>
+  </div>
+  <!-- Alert message ends -->
+
+  <div class="container ">
+    <form id="bookForm">
+      <div class="column is-half">
+        <div class="field">
+          <label class="label">Name</label>
+          <div class="control">
+            <input class="input" id="name" type="text" placeholder="Book Title">
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Author</label>
+          <div class="control">
+            <input class="input" id="author" type="text" placeholder="Author Name">
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Categories</label>
+          <div class="control">
+            <label class="radio">
+              <input type="radio" name="question" id="cooking" value="cooking">
+              Cooking
+            </label>
+            <label class="radio">
+              <input type="radio" name="question" id="programming" value="programming">
+              Computer Programming
+            </label>
+            <label class="radio">
+              <input type="radio" name="question" id="biography" value="biography">
+              Biography
+            </label>
+            <label class="radio">
+              <input type="radio" name="question" id="dictionary" value="dictionary">
+              Dictionary
+            </label>
+            <label class="radio">
+              <input type="radio" name="question" id="horror" value="horror">
+              Horror
+            </label>
+            <label class="radio">
+              <input type="radio" name="question" id="journalism" value="journalism">
+              Journalism
+            </label>
+            <label class="radio">
+              <input type="radio" name="question" id="fiction" value="fiction">
+              Fiction
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Date of Publish</label>
+          <div class="control">
+            <input class="input" id="dop" type="date" placeholder="Date of Publish">
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">Price</label>
+          <div class="control">
+            <input class="input" id="price" type="number" placeholder="Price">
+          </div>
+        </div>
+
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link">Submit</button>
+          </div>
+
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Record of books -->
+  <div class="container">
+    <table class="table is-fullwidth is-bordered is-hoverable" id="dataList">
+      <thead>
+        <tr>
+          <th class="has-text-centered">Name</th>
+          <th class="has-text-centered">Author</th>
+          <th class="has-text-centered">Type</th>
+          <th class="has-text-centered">Date of Publish</th>
+          <th class="has-text-centered">Price</th>
+      
+
+        </tr>
+      </thead>
+
+      <tbody id="tBody"> </tbody>
+    </table>
+  </div>
+
+  <!-- Record of books -->
+
+  <script>
+    class Book {
+      constructor(name, author, type, dop, price) {
+        this.name = name;
+        this.author = author;
+        this.type = type;
+        this.dop = dop;
+        this.price = price;
+      }
+    }
+
+    class Display {
+      add(book) {
+        let tableBody = document.querySelector('#tBody');
+        let listofBook = `<tr>
+                                    <td class="has-text-centered" >${book.name}</td>
+                                    <td class="has-text-centered" >${book.author}</td>
+                                    <td class="has-text-centered" >${book.type}</td>
+                                     <td class="has-text-centered" >${book.dop}</td>
+                                    <td class="has-text-centered" >${book.price}</td>
+                                   
+
+                                </tr>`;
+        tableBody.innerHTML += listofBook;
+      }
+
+      clear() {
+        let bookForm = document.querySelector('#bookForm');
+        bookForm.reset();
+      }
+
+      validate({
+        name,
+        author,
+        price,
+        dop
+      }) {
+        if (name.length < 2 || author.length < 2 || price.length < 0 || dop.length < "") {
+          return false
+        } else {
+          return true;
+        }
+      }
+      show(type, displayMessage) {
+        let message = document.querySelector('#message');
+        let msgText;
+        if (type === 'success') {
+          msgText = 'Success';
+        } else {
+          msgText = 'Error!';
+        }
+        message.innerHTML = `
+                <div class="notification is-${type}">
+                        <strong>${ msgText}:</strong> ${displayMessage}
+                </div> `;
+        setTimeout(() => {
+          message.innerHTML = ''
+        }, 1000);
+
+      }
+    }
+    var selectedRow = null;
+
+    document.querySelector("#bookForm").addEventListener("submit", bookFormSubmit);
+
+    function bookFormSubmit(e) {
+      let name = document.querySelector('#name').value;
+      let author = document.querySelector('#author').value;
+      let price = document.querySelector('#price').value;
+      let dop = document.querySelector('#dop').value;
+      let type;
+      let cooking = document.querySelector('#cooking');
+      let programming = document.querySelector('#programming');
+      let fiction = document.querySelector('#fiction');
+      let biography = document.querySelector('#biography');
+      let dictionary = document.querySelector('#dictionary');
+      let horror = document.querySelector('#horror');
+      let journalism = document.querySelector('#journalism');
+
+      if (cooking.checked) {
+        type = cooking.value;
+      } else if (programming.checked) {
+        type = programming.value;
+      } else if (biography.checked) {
+        type = biography.value;
+      } else if (dictionary.checked) {
+        type = dictionary.value;
+      } else if (horror.checked) {
+        type = horror.value;
+      } else if (journalism.checked) {
+        type = journalism.value;
+      } else if (fiction.checked) {
+        type = fiction.value;
+      }
+
+      let book = new Book(name, author, type, price, dop);
+
+      let display = new Display();
+
+      if (display.validate(book)) {
+
+        display.add(book);
+        display.clear();
+        display.show('success', 'Book has been successfully added')
+      } else {
+        display.show('danger', 'Sorry cannot add Fields are empty');
+      }
+
+      e.preventDefault();
+    }
+
+  
+  </script>
+</body>
+
+</html>
